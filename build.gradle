@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    lombokVersion = '1.18.32'
+    springVersion = '3.2.6'
+    jwtVersion = '0.12.5'
+}
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.5.5.Final"
+
+    implementation("org.springframework.boot:spring-boot-starter-web:${springVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-validation:${springVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-security:${springVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:${springVersion}")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    implementation("org.apache.commons:commons-lang3:3.14.0")
+    implementation("io.jsonwebtoken:jjwt-api:${jwtVersion}")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:${jwtVersion}")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:${jwtVersion}")
+
+    runtimeOnly 'com.h2database:h2:2.2.224'
+//    runtimeOnly 'mysql:mysql-connector-java'
+
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}

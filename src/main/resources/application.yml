@@ -1,0 +1,20 @@
+spring:
+  datasource:
+#    url: jdbc:mysql://localhost:3306/tutorial
+#    username: root
+#    password: admin
+    url: jdbc:h2:mem:testdb
+    username: root
+    password: admin
+  sql:
+    init:
+      mode: always
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate.ddl-auto: create
+    open-in-view: false
+    show-sql: true
+
+app:
+  secretKey: q3t6w9y$B&E)H@McQfTjWnZr4u7z!A%C*F+JaNdRgUkXp2s5v8y/B?E(G+KbPeSh
+  ttl: 45
