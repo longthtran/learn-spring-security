@@ -13,6 +13,7 @@ import org.example.service.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,16 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final UserConverter userConverter;
+
+    @GetMapping
+    public String welcome() {
+        return "Welcome to Spring Security";
+    }
+
+    @GetMapping("/mem")
+    public String getMem() {
+        return "A member";
+    }
 
     @PostMapping
     public ResponseEntity<CreateUserResp> create(@Valid @RequestBody CreateUserReq request, BindingResult result) {

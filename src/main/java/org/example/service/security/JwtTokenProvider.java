@@ -86,9 +86,9 @@ public class JwtTokenProvider {
      */
     public String generateToken(String subjectIdentifier, Collection<? extends GrantedAuthority> grantedAuthorities) {
         return Jwts.builder().claim(AUTHORITIES_KEY, grantedAuthorities)
-          .setSubject(subjectIdentifier)
-          .setIssuedAt(new Date())
-          .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(ttl * 60)))
+          .subject(subjectIdentifier)
+          .issuedAt(new Date())
+          .expiration(new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(ttl * 60)))
           .signWith(key)
           .compact();
     }
