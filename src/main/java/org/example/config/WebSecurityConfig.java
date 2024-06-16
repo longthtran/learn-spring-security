@@ -3,6 +3,7 @@ package org.example.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.entity.UserRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -39,7 +40,7 @@ public class WebSecurityConfig {
             .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
             .requestMatchers(HttpMethod.GET, "/api/users").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-            .requestMatchers("/api/users/mem").hasRole("USER")
+            .requestMatchers("/api/users/mem").hasAuthority(UserRole.USER.name())
             .anyRequest().authenticated()
           )
           .httpBasic(withDefaults())
