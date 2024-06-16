@@ -1,11 +1,14 @@
 package org.example.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,10 +22,15 @@ import java.util.Map;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+// https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
+@AllArgsConstructor
 @Slf4j
 public class WebSecurityConfig {
+
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -41,7 +49,7 @@ public class WebSecurityConfig {
           ).exceptionHandling(e -> e.authenticationEntryPoint((request, response, authException) -> {
               response.setStatus(HttpStatus.UNAUTHORIZED.value());
               response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-              response.getWriter().write(Map.of("error", "You are not authenticated!").toString());
+              objectMapper.writeValue(response.getOutputStream(), Map.of("error", "You are not authenticated!"));
           }));
         return http.build();
     }
