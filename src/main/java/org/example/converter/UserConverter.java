@@ -29,19 +29,13 @@ public abstract class UserConverter {
 
     public abstract FindUserResp toDto(User entity);
 
-    @BeforeMapping
+    @AfterMapping
     void setBCryptPasswordEncoder(@MappingTarget User user, CreateUserReq request) {
         String rawPwd = request.password();
         if (StringUtils.isNotBlank(rawPwd)) {
             user.setPassword(bCryptPasswordEncoder.encode(rawPwd));
         }
-    }
-
-    @AfterMapping
-    void setUserRole(@MappingTarget User user) {
-        if (CollectionUtils.isEmpty(user.getAuthorities())) {
-            user.setAuthorities(Set.of(UserRole.USER));
-        }
+        user.setAuthorities(Set.of(UserRole.USER));
     }
 
 }
