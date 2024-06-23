@@ -47,7 +47,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('MOD', 'ADMIN') or authentication.getName()==#username")
     @GetMapping("/{username}")
-    public ResponseEntity<FindUserResp> getUserByUsername(@PathVariable("username") @P("username") String username, Authentication authentication) {
+    public ResponseEntity<FindUserResp> getUserByUsername(@PathVariable("username") @P("username") String username) {
         log.debug("Get user by username: {}", username);
         User user = userService.get(username);
         if (user == null) {
