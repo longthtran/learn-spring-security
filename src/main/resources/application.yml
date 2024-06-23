@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   datasource:
 #    url: jdbc:mysql://localhost:3306/tutorial
 #    username: root
@@ -14,7 +16,10 @@ spring:
     hibernate.ddl-auto: create
     open-in-view: false
     show-sql: true
+  h2:
+    console:
+      enabled: true
 
-app:
-  secretKey: q3t6w9y$B&E)H@McQfTjWnZr4u7z!A%C*F+JaNdRgUkXp2s5v8y/B?E(G+KbPeSh
-  ttl: 45
+logging:
+  level:
+    org.example: DEBUG
