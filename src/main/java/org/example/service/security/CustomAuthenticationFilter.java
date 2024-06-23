@@ -34,14 +34,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
+            log.debug("Start custom authenticate filter");
             Map<String, String> credentials = objectMapper.readValue(request.getInputStream(), Map.class);
             final String username = credentials.get("username");
             final String password = credentials.get("password");
             if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
                 throw new PreAuthenticatedCredentialsNotFoundException("Bad credentials");
             }
-            log.debug("Authenticate user {}", username);
+            log.debug("Start custom authenticate filter - user {}", username);
             return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (IOException e) {
             throw new PreAuthenticatedCredentialsNotFoundException(e.getMessage());
