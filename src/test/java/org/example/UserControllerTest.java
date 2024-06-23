@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -55,20 +56,23 @@ public class UserControllerTest {
           .build();
     }
 
+    @WithAnonymousUser
     @Test
     public void testUserEndpoint_NoAuthenticate_Success() throws Exception {
-        mockMvc.perform(get("/api/users").with(anonymous())).andExpect(status().isOk());
+        mockMvc.perform(get("/api/users")).andExpect(status().isOk());
     }
 
+    @WithAnonymousUser
     @Test
     public void testMemberUserEndpoint_NoAuthenticate_Error() throws Exception {
         mockMvc.perform(get("/api/users/mem")).andExpect(status().isUnauthorized());
     }
 
+    @WithAnonymousUser
     @Test
     public void testFindUser_NoAuthenticate_Error() throws Exception {
         final String username = "tester";
-        mockMvc.perform(get(String.format("/api/users/%s", username)).with(anonymous()).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(String.format("/api/users/%s", username)).accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isUnauthorized());
     }
 
