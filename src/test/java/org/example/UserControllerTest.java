@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -55,25 +56,25 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testUserEndpoint() throws Exception {
-        mockMvc.perform(get("/api/users")).andExpect(status().isOk());
+    public void testUserEndpoint_NoAuthenticate_Success() throws Exception {
+        mockMvc.perform(get("/api/users").with(anonymous())).andExpect(status().isOk());
     }
 
     @Test
-    public void testMemberUserEndpoint() throws Exception {
+    public void testMemberUserEndpoint_NoAuthenticate_Error() throws Exception {
         mockMvc.perform(get("/api/users/mem")).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void testUser_NotAuthenticate_ReturnError() throws Exception {
+    public void testFindUser_NoAuthenticate_Error() throws Exception {
         final String username = "tester";
-        mockMvc.perform(get(String.format("/api/users/%s", username)).accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(String.format("/api/users/%s", username)).with(anonymous()).accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isUnauthorized());
     }
 
     @WithMockUser("tester")
     @Test
-    public void testUserRole_FindSameUserName_Success() throws Exception {
+    public void testFindUser_UserRoleFindSameUserName_Success() throws Exception {
         // Prepare data
         final String username = "tester";
         userTestDataFactory.createUser(username, "Tester", Collections.emptyList());
@@ -85,18 +86,19 @@ public class UserControllerTest {
 
     @WithMockUser("tester")
     @Test
-    public void testUserRole_FindAnotherUserName_ReturnError() throws Exception {
+    public void testFindUser_UserRoleFindAnotherUserName_Error() throws Exception {
         // Prepare data
         final String otherUsername = "testerAnother";
         userTestDataFactory.createUser(otherUsername, "Tester", Collections.emptyList());
 
         mockMvc.perform(get(String.format("/api/users/%s", otherUsername)).accept(MediaType.APPLICATION_JSON))
-          .andExpect(status().isForbidden());
+          .andExpect(status().isForbidden())
+          .andExpect(jsonPath("$.message").value("Access denied!"));
     }
 
     @WithMockUser(username = "mod", roles = {"MOD"})
     @Test
-    public void testModRole_FindSameUserName_Success() throws Exception {
+    public void testFindUser_ModRoleFindAnotherUserName_Success() throws Exception {
         // Prepare data
         final String username = "tester";
         userTestDataFactory.createUser(username, "Tester", Collections.emptyList());
@@ -107,7 +109,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testCreateUserSuccessful() throws Exception {
+    public void testCreateUser_Success() throws Exception {
         final String username = "tester";
         CreateUserReq input = new CreateUserReq("tester@gmail.com", username, "xyz789", "xyz789",
           "Long", "Tran", "District 2", "Thu Duc", "+8412345678");
@@ -128,7 +130,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testCreateUserDuplicate_returnError() throws Exception {
+    public void testCreateUserDuplicate_Error() throws Exception {
         // Prepare data
         final String username = "tester";
         userTestDataFactory.createUser(username, "Tester", Collections.emptyList());

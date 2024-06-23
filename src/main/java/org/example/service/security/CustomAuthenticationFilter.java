@@ -44,7 +44,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             log.debug("Authenticate user {}", username);
             return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new PreAuthenticatedCredentialsNotFoundException(e.getMessage());
         }
     }
 
@@ -67,6 +67,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws java.io.IOException, ServletException {
         super.unsuccessfulAuthentication(request, response, failed);
+        log.debug("Unsuccessful authenticate");
     }
 
 }

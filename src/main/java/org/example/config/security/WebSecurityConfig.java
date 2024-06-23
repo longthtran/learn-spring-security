@@ -1,4 +1,4 @@
-package org.example.config;
+package org.example.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -33,6 +33,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Slf4j
 public class WebSecurityConfig {
 
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
     private final ObjectMapper objectMapper;
 
     public static final String AUTH_URL = "/api/auth";
@@ -43,7 +47,8 @@ public class WebSecurityConfig {
         customAuthenticationFilter.setFilterProcessesUrl(WebSecurityConfig.AUTH_URL);
         log.debug("Set filter process url for custom filter successfully");
 
-        http
+        http.exceptionHandling(e -> e.authenticationEntryPoint(customAuthenticationEntryPoint)
+            .accessDeniedHandler(customAccessDeniedHandler))
           .authorizeHttpRequests((auth) -> auth
             .requestMatchers(new AntPathRequestMatcher(AUTH_URL + "/**")).permitAll()
             .requestMatchers(HttpMethod.GET, "/api/users").permitAll()
