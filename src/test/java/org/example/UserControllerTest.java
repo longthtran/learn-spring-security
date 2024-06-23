@@ -108,6 +108,18 @@ public class UserControllerTest {
           .andExpect(jsonPath("$.username").value(username));
     }
 
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Test
+    public void testFindUser_AdminRoleFindAnotherUserName_Success() throws Exception {
+        // Prepare data
+        final String username = "tester";
+        userTestDataFactory.createUser(username, "Tester", Collections.emptyList());
+
+        mockMvc.perform(get(String.format("/api/users/%s", username)).accept(MediaType.APPLICATION_JSON))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.username").value(username));
+    }
+
     @Test
     public void testCreateUser_Success() throws Exception {
         final String username = "tester";
